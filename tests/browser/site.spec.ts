@@ -1,0 +1,57 @@
+import { test,expect } from '@playwright/test'
+test('case studies, real calculations, invalid input, and reset',async({page})=>{
+ const errors:string[]=[]
+ page.on('pageerror',e=>errors.push(e.message))
+ await page.goto('/')
+ await expect(page.getByRole('heading',{level:1})).toContainText('Enterprise RiskManager.')
+ await page.getByRole('link',{name:'Explore my work'}).click()
+ await expect(page).toHaveURL(/#work$/)
+ await expect(page.locator('.mode.best')).toContainText('Sea · LCL')
+ await expect(page.locator('.mode.best')).toContainText('$3,231.30')
+ await page.getByLabel('Packaging per unit').selectOption('0.002')
+ await expect(page.locator('.mode.best')).toContainText('Air freight')
+ await expect(page.locator('.mode.best')).toContainText('$2,884.03')
+ await page.getByLabel('Order quantity').fill('200')
+ await expect(page.locator('.result-context')).toContainText('200 units')
+ await page.getByLabel('Order quantity').fill('0')
+ await expect(page.getByRole('alert')).toHaveText('Enter a whole quantity from 1 to 5,000 units.')
+ await expect(page.locator('.mode')).toHaveCount(0)
+ await page.getByLabel('Order quantity').fill('1.5')
+ await expect(page.getByRole('alert')).toContainText('whole quantity')
+ await page.getByRole('button',{name:'Reset example'}).click()
+ await expect(page.getByLabel('Order quantity')).toHaveValue('100')
+ await expect(page.locator('.mode.best')).toContainText('Sea · LCL')
+ await page.getByText('See assumptions & calculation boundaries').click()
+ await expect(page.getByText('This uses GlobalShipping’s actual', {exact:false})).toBeVisible()
+ expect(errors).toEqual([])
+})
+test('responsive layout, disclosure keyboard use, and truthful contact links',async({page})=>{
+ await page.goto('/')
+ await page.keyboard.press('Tab')
+ await expect(page.getByRole('link',{name:'Skip to content'})).toBeFocused()
+ await page.keyboard.press('Enter')
+ await expect(page).toHaveURL(/#main$/)
+ const summary=page.getByText('Explore the technical approach')
+ await summary.focus();await page.keyboard.press('Enter')
+ await expect(page.getByText('React/TypeScript and FastAPI connect', {exact:false})).toBeVisible()
+ for(const anchor of await page.locator('a[href^="#"]').all()){
+  const href=await anchor.getAttribute('href')
+  if(href&&href!=='#')expect(await page.locator(href).count()).toBe(1)
+ }
+ await expect(page.getByRole('link',{name:'Email Marcio'})).toHaveAttribute('href','mailto:marciofabrizio@gmail.com')
+ await expect(page.getByRole('link',{name:'More on LinkedIn'})).toHaveAttribute('href','https://www.linkedin.com/in/marcioherlein/')
+ await expect(page.getByRole('link',{name:'Visit insic.app'})).toHaveAttribute('href','https://insic.app')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+ await page.emulateMedia({reducedMotion:'reduce'})
+ expect(await page.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior)).toBe('auto')
+ await page.locator('body').click({position:{x:5,y:5}})
+ await page.screenshot({path:`test-results/site-${test.info().project.name}.png`,fullPage:true})
+})
+
+test('narrow phone and tablet layouts fit the viewport',async({page})=>{
+ for(const width of [320,768,1024]){
+  await page.setViewportSize({width,height:900})
+  await page.goto('/')
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+ }
+})
