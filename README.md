@@ -18,7 +18,7 @@ The browser suite uses the system Chromium at `/usr/bin/chromium`; set `CHROMIUM
 
 ## Content and evidence
 
-The career history and SAP/Insic case studies are based on the owner's supplied handoff. The confidential SAP source, records, screenshots, and any private career goals are excluded. These case studies do not claim measured outcomes, adoption counts, or verified live automation. No profile PDF was available, so no download is fabricated. Email uses a real mailto link; there is no simulated form submission. External product availability is outside local validation.
+The career history and SAP/Insic case studies are based on the owner's supplied handoff. Confidential SAP source, records, unredacted screenshots, and private career goals are excluded. Edited interface illustrations derived from owner-supplied screens are explicitly labeled. These case studies do not claim measured outcomes, adoption counts, or verified live automation. No profile PDF was available, so no download is fabricated. Email uses a real mailto link; there is no simulated form submission. External product availability is outside local validation.
 
 GlobalShipping's landed-cost engine was inspected and copied unchanged from `src/lib/landedCostEngine.ts` at ShippingAPP commit `4e3decf7eecbdf2bf8a6aba37200351ec9bffebf`:
 https://github.com/marcioherlein/ShippingAPP/blob/4e3decf7eecbdf2bf8a6aba37200351ec9bffebf/src/lib/landedCostEngine.ts
@@ -28,3 +28,7 @@ The three data modules in this website are **invented fixtures**, not copied com
 The unit tests verify independent expected totals and freight boundaries. Browser tests exercise desktop/mobile interaction, input errors and reset, internal navigation, keyboard disclosure, contact hrefs, reduced motion, and horizontal overflow. No live SAP, supplier, email, publishing, or authentication services are contacted.
 
 A current profile PDF and approved product screenshots can be added later. The public case studies use high-level descriptions and exclude confidential enterprise data.
+
+## Product galleries and case-study evidence
+
+The public project links open insic.app and globalshipping.app. Product-specific galleries include desktop/mobile filters, thumbnails, keyboard and touch browsing, and enlarged image views. Insic captures are saved repository images; GlobalShipping captures are newly rendered from its actual frontend locally. ERM visuals are edited derivatives of owner-supplied screenshots. See [visual provenance and feature evidence](docs/project-evidence.md) for the exact sources and verification limits. The Insic publishing case distinguishes scheduled X/LinkedIn bots from its tool-using Morning Brief research agent. The GlobalShipping case includes a second executable demonstration using its actual product-identity helpers.
