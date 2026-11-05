@@ -1,0 +1,80 @@
+import { test, expect } from '@playwright/test'
+
+test('guided shipments calculate different transport decisions and explain the difference', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.goto('/work/globalshipping/')
+  const output = page.locator('#demo-output')
+  await expect(output.locator('.demo-summary')).toContainText('Sea (LCL)')
+  await expect(output.locator('.demo-summary')).toContainText('$3,231.30')
+  await expect(output.locator('thead th')).toHaveCount(3)
+  await expect(output.locator('tbody tr')).toHaveCount(3)
+  await expect(output.locator('tbody tr').filter({ hasText: 'Courier' })).toContainText(/50 kg limit/)
+
+  await page.locator('[data-demo-preset="25-standard"]').click()
+  await expect(page.locator('#quantity')).toHaveValue('25')
+  await expect(page.locator('#volume')).toHaveValue('standard')
+  await expect(output.locator('.demo-summary')).toContainText('Air')
+  await expect(output.locator('.demo-summary')).toContainText('$1,194.68')
+  await expect(output.locator('.demo-summary')).toContainText('$47.79')
+
+  await page.locator('[data-demo-preset="25-compact"]').click()
+  await expect(page.locator('#volume')).toHaveValue('compact')
+  await expect(output.locator('.demo-summary')).toContainText('Courier')
+  await expect(output.locator('.demo-summary')).toContainText('$883.85')
+  await expect(output.locator('.demo-summary')).toContainText('$35.35')
+  await expect(output.locator('tbody tr').filter({ hasText: 'Courier' })).toContainText('13 kg chargeable')
+  await expect(output.locator('.demo-delta')).toContainText('$310.83 lower')
+  await expect(page.locator('#demo-status')).toContainText(/25 units.*compact packaging.*Courier/)
+
+  await page.locator('#quantity').fill('100')
+  await page.getByRole('button', { name: 'Compare costs', exact: true }).click()
+  await expect(output.locator('.demo-summary')).toContainText('Air')
+  await expect(output.locator('.demo-summary')).toContainText('$2,884.03')
+  await page.locator('.demo-assumptions summary').click()
+  await expect(page.locator('.demo-assumptions')).toContainText(/fictional fixture/)
+  await expect(page.locator('.demo-assumptions')).toContainText(/not freight quotes or customs determinations/)
+  expect(errors).toEqual([])
+})
+
+test('invalid quantities preserve the last valid result and reset restores the baseline', async ({ page }) => {
+  await page.goto('/work/globalshipping/')
+  await page.locator('[data-demo-preset="25-compact"]').click()
+  const output = page.locator('#demo-output')
+  const lastValid = await output.innerText()
+  for (const quantity of ['0', '1.5', '', '5001']) {
+    await page.locator('#quantity').fill(quantity)
+    await page.getByRole('button', { name: 'Compare costs', exact: true }).click()
+    await expect(page.locator('#demo-error')).toHaveText('Enter a whole quantity from 1 to 5,000 units.')
+    await expect(page.locator('#quantity')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.locator('#quantity')).toBeFocused()
+    expect(await output.innerText()).toBe(lastValid)
+    await expect(page.locator('#demo-status')).toContainText('last valid shipment')
+  }
+  await page.locator('[data-demo-reset]').click()
+  await expect(page.locator('#quantity')).toHaveValue('100')
+  await expect(page.locator('#volume')).toHaveValue('standard')
+  await expect(page.locator('#demo-error')).toBeHidden()
+  await expect(page.locator('#quantity')).not.toHaveAttribute('aria-invalid', 'true')
+  await expect(output.locator('.demo-summary')).toContainText('Sea (LCL)')
+  await expect(output.locator('.demo-summary')).toContainText('$3,231.30')
+  await expect(page.locator('#demo-status')).toContainText('Example reset.')
+})
+
+test('readable product descriptions distinguish complete products from components', async ({ page }) => {
+  await page.goto('/work/globalshipping/')
+  await page.locator('.identity-helper summary').click()
+  const identity = page.locator('#identity-result')
+  await expect(identity.locator('strong')).toHaveText('Complete scooter')
+  await expect(identity).toContainText('battery is included')
+  for (const description of await page.locator('.identity-option').all()) {
+    await expect(description).toBeVisible()
+    expect(await description.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+  }
+  await page.locator('input[name="identity-example"][value="battery"]').check()
+  await expect(identity.locator('strong')).toHaveText('Battery')
+  await expect(identity).toContainText('lithium battery')
+  await page.locator('input[name="identity-example"][value="charger"]').check()
+  await expect(identity.locator('strong')).toHaveText('Charger / power adapter')
+  await expect(page.locator('.identity-scope')).toContainText(/Tariff codes.*outside this example/)
+})

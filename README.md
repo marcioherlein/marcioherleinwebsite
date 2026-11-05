@@ -1,10 +1,10 @@
-# Marcio Herlein — personal career website
+# Marcio Herlein — career website
 
-A responsive editorial website with three project-specific case studies and a working import landed-cost demonstration. Built with TypeScript and Vite; no backend or credentials required.
+An editorial career overview and three focused case studies. Enterprise Risk Manager at SAP is the primary identity; applications and applied AI show the practical work alongside it.
 
 ## Develop and validate
 
-Use Node 22.12+ (verified here on Node 24.19.0).
+Use Node 22.12+; development and validation used Node 24.19.0.
 
 ```sh
 npm ci
@@ -14,21 +14,34 @@ npm test
 npm run test:e2e
 ```
 
-The browser suite uses the system Chromium at `/usr/bin/chromium`; set `CHROMIUM_PATH` to another installed Chromium executable if needed. It starts Vite itself. Build output is `dist/`; any static host can serve it. `npm run preview` serves a production build locally. Cloudflare's connected GitHub integration can deploy the static assets using the checked-in Wrangler configuration; see [DEPLOYMENT.md](DEPLOYMENT.md) for settings and validation.
+The browser tests use `CHROMIUM_PATH`, system `/usr/bin/chromium` when available, or Playwright's installed Chromium. On a machine without a browser, run `npx playwright install chromium` first. CI installs browser system dependencies as well.
 
-## Content and evidence
+## Pages and rendering
 
-The career history and SAP/Insic case studies are based on the owner's supplied handoff. Confidential SAP source, records, unredacted screenshots, and private career goals are excluded. Edited interface illustrations derived from owner-supplied screens are explicitly labeled. These case studies do not claim measured outcomes, adoption counts, or verified live automation. No profile PDF was available, so no download is fabricated. Email uses a real mailto link; there is no simulated form submission. External product availability is outside local validation.
+- `/`: professional overview, selected work, background and inquiry paths.
+- `/work/enterprise-risk/`: enterprise workflow, contribution and edited secondary interface references.
+- `/work/insic/`: financial research, a held editorial artifact, tool-using research and controlled publishing workflows.
+- `/work/globalshipping/`: import planning, a guided calculation and a bounded product-identity example.
+- `/404.html`: static not-found page.
 
-GlobalShipping's landed-cost engine was inspected and copied unchanged from `src/lib/landedCostEngine.ts` at ShippingAPP commit `4e3decf7eecbdf2bf8a6aba37200351ec9bffebf`:
-https://github.com/marcioherlein/ShippingAPP/blob/4e3decf7eecbdf2bf8a6aba37200351ec9bffebf/src/lib/landedCostEngine.ts
+`src/pages.ts` renders meaningful HTML at build time through the Vite configuration. The browser entry progressively enhances galleries and demonstrations; the role, case copy, contact links and initial numerical result remain available without JavaScript. No runtime server rendering or application secrets are needed. Build output is `dist/`; `npm run preview` serves it locally.
 
-The three data modules in this website are **invented fixtures**, not copied commercial rates. They retain the engine's expected input shape and are labeled on screen. The UI bounds quantity to integers 1–5,000; packaging changes volumetric weight, rounded sea W/M, freight, modeled taxes, and the selected lowest available total. Courier is unavailable beyond its 50 kg tariff boundary. The website does not copy the supplier intake, account flows, AI classification, or purchase optimizer and does not claim to run the entire ShippingAPP application.
+`src/style.css` is the shared visual system. `src/galleries.ts` keeps image/source metadata with keyboard, device filters, intrinsic sizing and inspectable original-resolution images. `src/demos.ts` uses the unchanged numerical and identity functions in `src/lib/` with invented portfolio fixtures. The demos do not connect live financial, supplier, customs, publishing or authentication services.
 
-The unit tests verify independent expected totals and freight boundaries. Browser tests exercise desktop/mobile interaction, input errors and reset, internal navigation, keyboard disclosure, contact hrefs, reduced motion, and horizontal overflow. No live SAP, supplier, email, publishing, or authentication services are contacted.
+## Production
 
-A current profile PDF and approved product screenshots can be added later. The public case studies use high-level descriptions and exclude confidential enterprise data.
+Cloudflare Workers Static Assets serves all four routes with explicit HTML and 404 handling. See [DEPLOYMENT.md](DEPLOYMENT.md). Project links open the public product websites; case links open these local studies. Email links open the visitor's mail client and do not pretend to submit a backend form.
 
-## Product galleries and case-study evidence
+Set the optional **build-time** `PUBLIC_SITE_URL` to the real HTTPS site URL once confirmed. It enables absolute canonical/Open Graph URLs and generated robots/sitemap files. No guessed hostname or test domain is published by default. Title, description, social-card asset and basic Open Graph metadata exist without it. Social preview rendering and actual Cloudflare headers/TLS must be checked on the real deployment.
 
-The public project links open insic.app and globalshipping.app. Product-specific galleries include desktop/mobile filters, thumbnails, keyboard and touch browsing, and enlarged image views. Insic captures are saved repository images; GlobalShipping captures are newly rendered from its actual frontend locally. ERM visuals are edited derivatives of owner-supplied screenshots. See [visual provenance and feature evidence](docs/project-evidence.md) for the exact sources and verification limits. The Insic publishing case distinguishes scheduled X/LinkedIn bots from its tool-using Morning Brief research agent. The GlobalShipping case includes a second executable demonstration using its actual product-identity helpers.
+`.github/workflows/ci.yml` runs build, unit and production-browser checks. The browser suite includes automated accessibility checks; passing automated checks is not a complete accessibility certification. Cloudflare's connected deployment is separate from the GitHub checks.
+
+## Evidence and accuracy
+
+The career history and ERM case use the owner's account and supplied source-review handoff. No private career goals, confidential risk records, exposures or proprietary ERM source are included. ERM visuals are edited derivatives and are labeled as references; the primary diagram is an explicitly labeled workflow illustration.
+
+Insic captures are saved images from an earlier interface. The editorial artifact quotes three research questions from a held draft dated 8 October 2026; it is not proof of a generated, queued or published post. The product prototype, tool-using Morning Brief and deterministic scheduled publishing routines are described separately. No adoption, performance, revenue, reach or savings claims are added.
+
+GlobalShipping frontend captures are real local renders; its complete live-provider/account/deployment status is not established here. The cost example uses the actual engine with invented rates. The identity example is one deterministic helper stage, not the full classifier or a customs ruling. Saved-quote behavior is described from source; no fake completed quote screenshot is used.
+
+See [project sources and visual provenance](docs/project-evidence.md), the [original review](docs/reviews/2026-11-production-review-and-plan.md), and the [implementation record](docs/reviews/2026-11-redesign-implementation.md).

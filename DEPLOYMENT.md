@@ -60,3 +60,22 @@ the GitHub-connected Worker, not a Pages project.
 
 A `vercel.app` hostname is managed by Vercel. Cloudflare serves its own
 `workers.dev` hostname or a custom domain configured in the Cloudflare account.
+
+Redesigned static routes and release checks
+------------------------------------------
+
+The Vite build now generates the homepage, three case-study routes and 404 HTML.
+Wrangler's asset settings use `auto-trailing-slash` and `404-page` handling.
+Public `_headers` declares a self-hosted-content policy, nosniff, referrer and
+framing restrictions. These declarations need external verification on Cloudflare;
+a successful local build alone is not confirmation of production headers.
+
+The optional build variable `PUBLIC_SITE_URL` must be the actual HTTPS portfolio
+URL, without a trailing slash. When set, the build emits absolute canonical and
+Open Graph URLs plus robots/sitemap files. No API token is needed for this setting.
+It is deliberately unset until a real URL is confirmed.
+
+The GitHub check workflow runs 8 unit tests and 32 browser/accessibility cases.
+With `CI=true`, tests use the built production preview rather than Vite's dev
+server. Cloudflare's connected build/deploy workflow runs separately; a pushed
+commit or a local test pass does not establish successful public deployment.
