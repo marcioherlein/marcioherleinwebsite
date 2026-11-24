@@ -44,6 +44,14 @@ test('the homepage leads to focused case studies and real contact destinations',
   await expect(page.locator('.project-gallery, #demo-form')).toHaveCount(0)
   await expect(page.locator('main a[href*="github.com"]')).toHaveCount(0)
 
+  const erm = page.locator('#enterprise-risk')
+  for (const capture of ['navigation', 'joule']) {
+    const image = erm.locator(`img[src="/projects/erm/${capture}.webp"]`)
+    await image.scrollIntoViewIfNeeded()
+    await expect(image).toBeVisible()
+    await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0)
+  }
+
   for (const item of cases) {
     const link = page.locator(`a[href="${item.path}"]`).first()
     await expect(link).toBeVisible()
