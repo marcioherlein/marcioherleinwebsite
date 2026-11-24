@@ -37,11 +37,11 @@ Only frontend rendering was started for the capture. No production Worker, suppl
 ERM Intelligence
 ----------------
 
-The owner supplied Morning Brief and Control Tower/Risk Quantifier screenshots in this conversation. These are now expressly supplied for a public-facing portfolio treatment.
+The case uses the owner’s `SAP-ERM-Portfolio.zip` brief and feature notes to describe the workflow from portfolio review through reporting. The account of deployment and usage comes from the owner.
 
-The two `erm-*-edited.png` files were produced by image editing from those screenshots. They are **derived interface illustrations**, not pixel-exact captures or current live screenshots. Article narratives, identifying context, user details, unsupported timing promises, and external extension badges were removed/redacted. The gallery prominently labels the provenance. No confidential risk records, exposure values, internal source code, or unredacted screenshot is included.
+The published images in `public/projects/erm/` are cropped excerpts of the owner’s desktop captures. `navigation.webp` shows the sidebar in `04-my-risks.png`. `joule.webp` shows the welcome state in `01-chatbot.png`. `register.webp` shows filters and column headings in `05-risk-workspace.png`, which depicts the risk register list. `quantifier.webp` and `studio.webp` show selected controls in `07-risk-quantifier.png` and `08-dashboard-studio.png`. The cover uses `assets/sap_cover_right.png` from the same archive.
 
-The images demonstrate visible UI organization, not verified exports, model results, news accuracy, executive approval, or production completion. The high-level case-study claims still use the owner's supplied account and historical source-review handoff; the ERM repository was unavailable here.
+The crops exclude register rows, internal exposure figures, and other sensitive content. Captions identify the interface details shown, and full-size links point to the public excerpts. The original archive stays outside the published site.
 
 Access and validation limits
 ----------------------------

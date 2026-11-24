@@ -75,7 +75,7 @@ URL, without a trailing slash. When set, the build emits absolute canonical and
 Open Graph URLs plus robots/sitemap files. No API token is needed for this setting.
 It is deliberately unset until a real URL is confirmed.
 
-The GitHub check workflow runs 8 unit tests and 32 browser/accessibility cases.
+The GitHub check workflow runs unit tests and desktop and mobile browser and accessibility checks.
 With `CI=true`, tests use the built production preview rather than Vite's dev
 server. Cloudflare's connected build/deploy workflow runs separately; a pushed
 commit or a local test pass does not establish successful public deployment.

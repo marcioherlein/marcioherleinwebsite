@@ -3,10 +3,6 @@ type Slide = { src:string; width:number; height:number; alt:string; title:string
 type Gallery = { id:string; label:string; theme:string; slides:Slide[] }
 
 const galleries:Gallery[] = [
- { id:'erm',label:'ERM Intelligence',theme:'enterprise',slides:[
-  {src:'/projects/erm-brief-edited.png',width:1586,height:992,alt:'Edited ERM Morning Brief interface showing topic tabs and an expandable intelligence list with article content redacted',title:'Morning Brief · intelligence in context',detail:'A reading workspace for exploring external signals by topic, with source context and expandable items.',origin:'AI-edited visual derived from the owner’s supplied screenshot. Article text and identifying details are redacted; this is not a live capture.',device:'desktop'},
-  {src:'/projects/erm-quantification-edited.png',width:1586,height:992,alt:'Edited ERM Risk Quantifier entry screen showing data-source context and the scenario-assessment workflow',title:'Risk Quantifier · a structured assessment entry point',detail:'The interface introduces assessment inputs, scenario analysis, and report outputs. The image shows the entry screen, not calculated results.',origin:'AI-edited visual derived from the owner’s supplied screenshot. Identifying source details and timing claims are removed; this is not a live capture.',device:'desktop'},
- ]},
  { id:'insic',label:'Insic',theme:'finance',slides:[
   {src:'/projects/insic-research.png',width:1280,height:900,href:'https://insic.app/stock/NOW',alt:'Saved Insic ServiceNow stock overview capture with company context, model valuation and price chart',title:'Company context, alongside valuation',detail:'Bring the business description, model assumptions, and market context into the same research view.',origin:'Saved stock-page capture from the Insic repository · earlier interface; displayed figures are not live.',device:'desktop'},
   {src:'/projects/insic-valuation.png',width:1280,height:900,href:'https://insic.app/stock/NOW',alt:'Saved Insic stock-page capture showing valuation scenarios and reverse DCF context',title:'Challenge what the price implies',detail:'Scenario ranges and reverse-valuation context help a researcher inspect the assumptions behind a model conclusion.',origin:'Saved stock-page capture from the Insic repository · earlier interface; displayed figures are not live.',device:'desktop'},
@@ -29,7 +25,6 @@ function safe(value:string){
 }
 
 function originLabel(gallery:Gallery){
- if(gallery.id==='erm')return 'AI-edited interface visual'
  if(gallery.id==='insic')return 'Archived product capture'
  return 'Local frontend capture'
 }
@@ -55,9 +50,9 @@ export function galleryMarkup(id:string){
  if(!gallery)return ''
  const first=gallery.slides[0]
  const mixedDevices=new Set(gallery.slides.map(slide=>slide.device)).size>1
- const heading=gallery.id==='erm'?'Interface references':gallery.id==='insic'?'Inside the research workspace':'From introduction to guided intake'
+ const heading=gallery.id==='insic'?'Inside the research workspace':'From introduction to guided intake'
  return `<section class="project-gallery gallery-${gallery.theme}" data-gallery="${safe(gallery.id)}" role="region" aria-roledescription="carousel" aria-label="${safe(gallery.label)} product gallery">
-  <div class="gallery-heading"><div><span class="eyebrow">A closer look / ${safe(gallery.label)}</span><h2>${heading}</h2></div>${mixedDevices?`<div class="gallery-filters" role="group" aria-label="${safe(gallery.label)} screen format"><button type="button" data-format="all" aria-pressed="true" disabled>All views</button><button type="button" data-format="desktop" aria-pressed="false" disabled>Desktop</button><button type="button" data-format="mobile" aria-pressed="false" disabled>Mobile</button></div>`:'<span class="gallery-edited-label">Edited interface visuals</span>'}</div>
+  <div class="gallery-heading"><div><span class="eyebrow">A closer look / ${safe(gallery.label)}</span><h2>${heading}</h2></div>${mixedDevices?`<div class="gallery-filters" role="group" aria-label="${safe(gallery.label)} screen format"><button type="button" data-format="all" aria-pressed="true" disabled>All views</button><button type="button" data-format="desktop" aria-pressed="false" disabled>Desktop</button><button type="button" data-format="mobile" aria-pressed="false" disabled>Mobile</button></div>`:''}</div>
   <figure class="gallery-figure"><div class="gallery-stage" data-device="${first.device}" role="group" tabindex="0" aria-label="${safe(gallery.label)} screenshots. Use left and right arrow keys, Home, or End to browse."><div class="gallery-frame">${imageMarkup(first)}</div><button type="button" class="gallery-expand" aria-label="Enlarge ${safe(gallery.label)} image" disabled>Enlarge <svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 13 13 3M3 3h10v10" stroke="currentColor" stroke-width="1.3"/></svg></button><p class="gallery-image-error" hidden role="alert">This image could not load. Choose another view or open the product website.</p></div><figcaption class="gallery-caption">${captionMarkup(gallery,first)}</figcaption></figure>
   <div class="gallery-navigation"><div class="gallery-pagination"><button type="button" data-step="-1" aria-label="Previous ${safe(gallery.label)} image" disabled>←</button><span class="gallery-counter" aria-live="polite" aria-atomic="true">1 / ${gallery.slides.length}</span><button type="button" data-step="1" aria-label="Next ${safe(gallery.label)} image" disabled>→</button></div><div class="gallery-thumbnails" role="group" aria-label="Choose a ${safe(gallery.label)} view">${thumbnailMarkup(gallery,gallery.slides.map((_,index)=>index),0,true)}</div></div>
  </section>`

@@ -7,7 +7,7 @@ const external = 'target="_blank" rel="noopener noreferrer"'
 const email = (subject:string) => `mailto:marciofabrizio@gmail.com?subject=${encodeURIComponent(subject)}`
 export const pageMeta:Record<string,{title:string;description:string}>={
  '/':{title:'Marcio Herlein — Enterprise Risk Manager',description:'Enterprise Risk Manager at SAP, combining finance and risk experience with practical applications and applied AI. Explore selected work and discuss a project or team opportunity.'},
- '/work/enterprise-risk/':{title:'Enterprise risk intelligence — Marcio Herlein',description:'How Marcio Herlein built a risk intelligence workspace at SAP: portfolio exploration, evidence, assessment support and stakeholder reporting.'},
+ '/work/enterprise-risk/':{title:'SAP ERM Intelligence — Marcio Herlein',description:'How Marcio Herlein, an Enterprise Risk Manager at SAP, built a workspace for finding risks, assessing exposure, and preparing quarterly reviews.'},
  '/work/insic/':{title:'Insic: financial research and automation — Marcio Herlein',description:'A financial research prototype with editable valuations, saved reasoning, tool-using research and controlled X and LinkedIn publishing workflows.'},
  '/work/globalshipping/':{title:'GlobalShipping: from product evidence to purchase plan — Marcio Herlein',description:'Import planning, constrained customs classification and real landed-cost calculations. Explore a working example with clearly labeled assumptions.'},
  '/404.html':{title:'Page not found — Marcio Herlein',description:'Find Marcio Herlein’s selected work and contact details.'},
@@ -37,14 +37,89 @@ export function renderHome(){
  `,true)
 }
 
+function ermImageLink(image:string, label:string){
+ return `<a class="subtle-link" href="/projects/erm/${image}.webp" aria-label="View full size: ${label}" ${external}>View full size ${arrow}</a>`
+}
+
+function ermCapture(image:string, width:number, height:number, alt:string, label:string, caption:string){
+ return `<figure class="erm-capture">
+  <div class="erm-capture-frame"><img src="/projects/erm/${image}.webp" width="${width}" height="${height}" alt="${alt}" loading="lazy" decoding="async"></div>
+  <figcaption><span><strong>${label}</strong> · ${caption}</span>${ermImageLink(image,label)}</figcaption>
+ </figure>`
+}
+
 export function renderEnterprise(){return frame(`
- ${caseIntro('01','ENTERPRISE RISK INTELLIGENCE','A clearer view of<br><em>the risk picture.</em>','I built a platform at SAP to connect portfolio exploration, evidence, assessment support, and stakeholder review preparation.',['Built from scratch','SAP BTP','Used by risk managers'])}
- <div class="container case-body">${facts('Enterprise risk managers.','Fragmented risk information, related responses, documents, and financial context.','A connected portfolio view, assessment support, and material for stakeholder reviews.','Application design and development, using AI-assisted development tools.')}
- <section class="case-split"><div><p class="eyebrow">THE BUSINESS PROBLEM</p><h2>Finding related risks<br>shouldn’t depend on asking around.</h2><p>The existing risk system was difficult to navigate. Managers lacked visibility across risks, organizational areas, responses, and interdependencies. Similar risks were sometimes opened separately.</p><p>The starting point was a practical question: how can a risk manager see the relevant context before challenging an assessment or preparing a review?</p></div>${workflow()}</section>
- <section class="case-section"><p class="eyebrow">THE WORKING PATH</p><h2>Explore. Challenge. Prepare.</h2><div class="story-steps"><article><span>01 / EXPLORE</span><h3>Start with the portfolio.</h3><p>Filter and drill into risks, categories, drivers, parent/underlying relationships, and responses.</p></article><article><span>02 / CHALLENGE</span><h3>Bring evidence to the assessment.</h3><p>Connect documents and financial context with retrieval, source metadata, quantification tools, and scenario calculations.</p></article><article><span>03 / PREPARE</span><h3>Support the next conversation.</h3><p>Use engagement preparation, follow-up, and reporting workflows to turn analysis into material for review.</p></article></div></section>
- <section class="case-split case-section"><div><p class="eyebrow">ENGINEERING JUDGMENT</p><h2>Different kinds of evidence<br>need different treatment.</h2></div><div><p>Numerical calculations and AI-generated estimates are distinct. Local scenarios support sensitivity analysis; they do not demonstrate that changing an assumption will cause a business outcome.</p><p>Human confirmation and validation remain part of the process. Some registration and review steps are manual.</p><details><summary>Implementation and boundaries</summary><p>React/TypeScript and FastAPI connect portfolio tools with document parsing, retrieval, contextual assistance, seeded Monte Carlo and deterministic calculations. The deployment uses SAP BTP infrastructure.</p><p>This is a high-level account of my work. Internal records, exposure values, and proprietary source are not public. The source review and my account support the description; no measured savings, reduced risk exposure, or production certification is claimed.</p></details></div></section>
- <section class="case-section"><p class="eyebrow">PUBLIC EVIDENCE</p><h2>The workflow is visible.<br>The enterprise records stay private.</h2><p class="section-copy">The illustration above explains how the work connects. The supplied interface references below have been edited and redacted; they are not substitutes for a completed assessment or a live enterprise demonstration.</p><details class="reference-details"><summary>Inspect the edited interface references</summary>${galleryMarkup('erm')}</details></section>
- <a class="next-case" href="/work/insic/"><span>Next case / Financial research & automation</span><strong>Insic ${arrow}</strong></a></div>
+ <section class="case-intro container erm-intro" aria-labelledby="erm-title">
+  <a class="back-link" href="/#work">← Selected work</a>
+  <div class="erm-hero">
+   <div>
+    <p class="eyebrow">SAP ERM INTELLIGENCE</p>
+    <h1 id="erm-title">From risk register <em>to quarterly review.</em></h1>
+    <p class="case-lead">As an Enterprise Risk Manager at SAP, I designed and built ERM Intelligence to connect risk records, assessment evidence, and reporting in one workspace.</p>
+    ${status(['Runs on SAP BTP','Used in quarterly reviews'])}
+    <a class="text-link" href="#erm-workflow">Follow the review process <span aria-hidden="true">↓</span></a>
+   </div>
+   <figure class="erm-cover">
+    <div class="erm-cover-images">
+     <img src="/projects/erm/navigation.webp" width="436" height="1504" alt="ERM Intelligence navigation with My Risks selected and links to risk and reporting tools" decoding="async">
+     <img src="/projects/erm/joule.webp" width="858" height="1286" alt="Joule assistant panel with example questions about risk exposure, ownership, and mitigation" decoding="async">
+    </div>
+    <figcaption><span>Workspace navigation and Joule · desktop excerpts</span>${ermImageLink('joule','Joule assistant')}</figcaption>
+   </figure>
+  </div>
+ </section>
+ <div class="container case-body erm-body">
+  <section class="erm-context" id="erm-workflow" aria-labelledby="erm-context-title">
+   <div class="erm-context-copy">
+    <h2 id="erm-context-title">A review starts with knowing what changed.</h2>
+    <div><p>Preparing a quarterly review meant moving between the risk register, updates from owners, and the actions meant to reduce exposure. When related risks were hard to find, it was easy to miss a dependency or open a similar risk separately.</p><p>I built ERM Intelligence around the questions I ask in a review. Which risks need attention? What supports the assessment? What should we follow up on?</p></div>
+   </div>
+   <nav class="erm-chapters" aria-label="Risk review workflow"><ul>
+    <li><a href="#erm-portfolio">Find risks</a></li>
+    <li><a href="#erm-evidence">Gather evidence</a></li>
+    <li><a href="#erm-scenarios">Model scenarios</a></li>
+    <li><a href="#erm-reporting">Prepare the review</a></li>
+   </ul></nav>
+  </section>
+  <section class="case-split erm-stage" id="erm-portfolio" aria-labelledby="erm-portfolio-title">
+   <div>
+    <h2 id="erm-portfolio-title">Find the risks that need attention.</h2>
+    <p>Risk Overview surfaces exposure and mitigation trends across the portfolio. My Risks narrows the list to the risks and responses a person is responsible for.</p>
+    <p>In Risk Workspace, I can trace a parent risk to its underlying risks and mitigation actions. The latest update sits alongside inherent exposure before controls, residual exposure today, and planned exposure after open actions.</p>
+   </div>
+   ${ermCapture('register',2078,270,'Risk Register interface with parent, underlying risk, and response filters and columns for risk category, status, and owner','Risk Register','Filters and column headings')}
+  </section>
+  <section class="case-split erm-stage" id="erm-evidence" aria-labelledby="erm-evidence-title">
+   <div>
+    <h2 id="erm-evidence-title">Bring the evidence into the discussion.</h2>
+    <p>Joule retrieves relevant register entries and documents for questions about a specific risk, its latest update, or its open responses. For portfolio totals, I use the structured portfolio views.</p>
+    <p>Morning Brief brings external developments and market signals into the same workflow so I can decide what merits follow-up with a risk owner.</p>
+   </div>
+   <figure class="erm-question"><figcaption>Example question for Joule</figcaption><blockquote>“What changed since our last review, and which mitigation actions still need follow-up?”</blockquote></figure>
+  </section>
+  <section class="case-split erm-stage" id="erm-scenarios" aria-labelledby="erm-scenarios-title">
+   <div>
+    <h2 id="erm-scenarios-title">Make the exposure assumptions visible.</h2>
+    <p>Risk Quantifier structures probability and loss assumptions so we can compare low, base, and stress scenarios. Monte Carlo simulation gives us a range of modeled losses to discuss alongside the existing estimate.</p>
+    <p>A difference gives me a specific question for the risk owner. Which assumption changed, and what evidence supports it?</p>
+   </div>
+   ${ermCapture('quantifier',1064,402,'Risk Quantifier setup with scenario context, loss evidence, and a Start Quantification button','Risk Quantifier','Assessment setup')}
+  </section>
+  <section class="case-split erm-stage" id="erm-reporting" aria-labelledby="erm-reporting-title">
+   <div>
+    <h2 id="erm-reporting-title">Turn the analysis into a review draft.</h2>
+    <p>Dashboard Studio lets risk managers configure views for recurring reviews. Dashboard Library keeps views created with Joule available for later inspection.</p>
+    <p>Report Generator brings the selected risks, response status, and assessment narrative into a draft. The risk manager checks the scope, figures, and any AI-assisted wording before sharing it.</p>
+   </div>
+   ${ermCapture('studio',2152,278,'Dashboard Studio toolbar with portfolio presets, a Save view action, and export controls','Dashboard Studio','Presets and saved-view controls')}
+  </section>
+  <section class="case-section erm-method" aria-labelledby="erm-method-title">
+   <h2 id="erm-method-title">What the risk manager still decides</h2>
+   <p class="section-copy">The platform makes related evidence easier to find and assumptions easier to revisit. Risk managers validate the inputs, agree on the assessment, and decide which actions to take forward.</p>
+   <details><summary>Implementation and image sources</summary><p>I built the workspace with React, TypeScript, and FastAPI on SAP Business Technology Platform. Document retrieval supports contextual questions, and scenario calculations use explicit model inputs.</p><p>The images are excerpts from supplied desktop captures. They show the interface controls with internal risk records and figures cropped out.</p></details>
+  </section>
+  <a class="next-case" href="/work/insic/"><span>Next case / Financial research & automation</span><strong>Insic ${arrow}</strong></a>
+ </div>
  `,false,'Enterprise risk workflows')}
 
 export function renderInsic(){return frame(`

@@ -8,11 +8,44 @@ test('case studies link to the products and use actual image assets', async ({ p
   await page.goto('/work/globalshipping/')
   await expect(page.locator('a[href="https://globalshipping.app"]').first()).toBeVisible()
   await expect(page.getByRole('main')).toContainText(/classif/i)
-  for (const image of ['/projects/insic-logo.svg', '/projects/globalshipping-mark.svg', '/projects/erm-brief-edited.png', '/projects/globalshipping-mobile-intake.jpg']) {
+  for (const image of ['/projects/insic-logo.svg', '/projects/globalshipping-mark.svg', '/projects/globalshipping-mobile-intake.jpg']) {
     const response = await page.request.get(image)
     expect(response.status(), image).toBe(200)
     expect(response.headers()['content-type'], image).toMatch(/image\//)
   }
+})
+
+test('the ERM walkthrough links to its chapters and full-size captures', async ({ page }) => {
+  await page.goto('/work/enterprise-risk/')
+  await expect(page.getByRole('main')).toContainText('Enterprise Risk Manager at SAP')
+  await page.getByRole('link', { name: 'Follow the review process' }).click()
+  await expect(page).toHaveURL(/#erm-workflow$/)
+
+  const workflow = page.getByRole('navigation', { name: 'Risk review workflow' })
+  for (const [name, fragment] of [
+    ['Find risks', '#erm-portfolio'],
+    ['Gather evidence', '#erm-evidence'],
+    ['Model scenarios', '#erm-scenarios'],
+    ['Prepare the review', '#erm-reporting'],
+  ]) {
+    await workflow.getByRole('link', { name, exact: true }).click()
+    await expect(page).toHaveURL(url => url.hash === fragment)
+    await expect(page.locator(fragment).getByRole('heading')).toBeVisible()
+  }
+
+  const images = page.locator('img[src^="/projects/erm/"]')
+  await expect(images).toHaveCount(5)
+  for (const image of await images.all()) {
+    await image.scrollIntoViewIfNeeded()
+    await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0)
+  }
+
+  const [capture] = await Promise.all([
+    page.waitForEvent('popup'),
+    page.getByRole('link', { name: 'View full size: Risk Quantifier', exact: true }).click(),
+  ])
+  await expect(capture).toHaveURL(/\/projects\/erm\/quantifier\.webp$/)
+  await expect(capture.locator('img')).toBeVisible()
 })
 
 test('galleries browse by keyboard, filter screen formats, and reserve image space', async ({ page, isMobile }) => {
@@ -57,13 +90,6 @@ test('galleries browse by keyboard, filter screen formats, and reserve image spa
   await expect(shipping.locator('.gallery-counter')).toHaveText('1 / 2')
   await shipping.getByRole('button', { name: 'Next GlobalShipping image', exact: true }).click()
   await expect(shipping.locator('.gallery-image')).toHaveAttribute('src', '/projects/globalshipping-mobile-intake.jpg')
-
-  await page.goto('/work/enterprise-risk/')
-  await page.locator('.reference-details > summary').click()
-  const erm = page.getByRole('region', { name: 'ERM Intelligence product gallery', exact: true })
-  await expect(erm).toContainText('AI-edited interface visual')
-  await erm.getByRole('button', { name: 'Next ERM Intelligence image', exact: true }).click()
-  await expect(erm.locator('.gallery-caption')).toContainText('Risk Quantifier')
 })
 
 test('enlarged captures support readable zoom, original files, and Escape focus return', async ({ page }) => {

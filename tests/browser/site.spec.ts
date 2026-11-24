@@ -20,8 +20,10 @@ test.describe('useful initial HTML', () => {
       await expect(page.locator('a[href^="mailto:marciofabrizio@gmail.com"]').first()).toHaveAttribute('href', /^mailto:marciofabrizio@gmail\.com(?:\?|$)/)
       await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S.{30}/)
       expect(await page.title()).not.toMatch(/Vite|^$/)
-      if (path !== '/') {
-        if (path === '/work/enterprise-risk/') await page.locator('.reference-details > summary').click()
+      if (path === '/work/enterprise-risk/') {
+        await expect(page.locator('.erm-cover img').last()).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Turn the analysis into a review draft.' })).toBeVisible()
+      } else if (path !== '/') {
         await expect(page.locator('.project-gallery .gallery-image')).toBeVisible()
         await expect(page.locator('.gallery-caption')).not.toBeEmpty()
       }

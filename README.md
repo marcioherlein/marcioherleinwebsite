@@ -38,7 +38,7 @@ Set the optional **build-time** `PUBLIC_SITE_URL` to the real HTTPS site URL onc
 
 ## Evidence and accuracy
 
-The career history and ERM case use the owner's account and supplied source-review handoff. No private career goals, confidential risk records, exposures or proprietary ERM source are included. ERM visuals are edited derivatives and are labeled as references; the primary diagram is an explicitly labeled workflow illustration.
+The ERM case uses the owner's portfolio brief and supplied desktop captures. The case study shows cropped interface details with risk records and exposure values omitted. The homepage retains a labeled workflow illustration.
 
 Insic captures are saved images from an earlier interface. The editorial artifact quotes three research questions from a held draft dated 8 October 2026; it is not proof of a generated, queued or published post. The product prototype, tool-using Morning Brief and deterministic scheduled publishing routines are described separately. No adoption, performance, revenue, reach or savings claims are added.
 
